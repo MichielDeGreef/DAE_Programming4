@@ -22,9 +22,18 @@ namespace dae
 
 		void AddComponent(const std::shared_ptr<Component>& component);
 
+		template <typename T>
+		T* getComponent()
+		{
+			for (auto& component : m_Components)
+			{
+				if (dynamic_cast<T*>(component.get()))
+					return (T*)component.get();
+			}
+			return nullptr;
+		}
+
 	private:
 		std::vector<std::shared_ptr<Component>> m_Components;
-
-
 	};
 }

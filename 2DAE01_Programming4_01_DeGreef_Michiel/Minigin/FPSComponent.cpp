@@ -15,7 +15,7 @@ dae::FPSComponent::~FPSComponent()
 
 void dae::FPSComponent::Update(float msPerUpdate)
 {
-	m_TextComponent->Update(msPerUpdate); // Change
+	m_TextComponent->Update(msPerUpdate);
 	m_FPS = int(1.f / msPerUpdate);
 	m_TextComponent->SetText(std::to_string(m_FPS) + " FPS");
 
@@ -23,5 +23,5 @@ void dae::FPSComponent::Update(float msPerUpdate)
 
 void dae::FPSComponent::Render()
 {
-	m_TextComponent->Render();
+	
 }

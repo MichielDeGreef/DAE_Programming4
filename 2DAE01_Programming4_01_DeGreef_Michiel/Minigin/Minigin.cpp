@@ -13,6 +13,9 @@
 #include "TextComponent.h"
 #include "ImageComponent.h"
 #include "FPSComponent.h"
+#include "Qbert.h"
+#include "LivesComponent.h"
+#include "ScoreComponent.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -70,7 +73,57 @@ void dae::Minigin::LoadGame() const
 	textComponent->SetPosition(0, 0);
 	std::shared_ptr<FPSComponent> fpsComponent = make_shared<FPSComponent>(textComponent);
 	go->AddComponent(fpsComponent);
+	go->AddComponent(textComponent);
 	scene.Add(go);
+
+	//go = std::make_shared<GameObject>();
+	//std::shared_ptr<Qbert> qbert = make_shared<Qbert>();
+	//go->AddComponent(qbert);
+	//scene.Add(go);
+
+	// Player 1:
+	auto qbertObject = std::make_shared<GameObject>();
+
+	std::shared_ptr<Qbert> qbertScript = make_shared<Qbert>();
+	qbertObject->AddComponent(qbertScript);
+
+	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 16);
+	textComponent = make_shared<TextComponent>(" Lives", font, SDL_Color{ 255,0,0 });
+	textComponent->SetPosition(0, 100);
+	std::shared_ptr<LivesComponent> livesComponent = make_shared<LivesComponent>(*qbertObject, textComponent);
+	qbertObject->AddComponent(textComponent);		// Lives component
+	qbertObject->AddComponent(livesComponent);		// Lives component
+
+	textComponent = make_shared<TextComponent>(" Lives", font, SDL_Color{ 0,255,0 });
+	textComponent->SetPosition(0, 130);
+	std::shared_ptr<ScoreComponent> scoreComponent = make_shared<ScoreComponent>(*qbertObject, textComponent);
+	qbertObject->AddComponent(textComponent);		// Score component
+	qbertObject->AddComponent(scoreComponent);		// Score component
+
+	scene.Add(qbertObject);
+
+	// Player 2:
+	qbertObject = std::make_shared<GameObject>();
+
+	qbertScript = make_shared<Qbert>();
+	qbertScript->SetDieButton(ControllerButton::ButtonB);
+	qbertScript->SetScoreAdditionButton(ControllerButton::ButtonX);
+	qbertObject->AddComponent(qbertScript);
+
+	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 16);
+	textComponent = make_shared<TextComponent>(" Lives", font, SDL_Color{ 255,0,0 });
+	textComponent->SetPosition(0, 200);
+	livesComponent = make_shared<LivesComponent>(*qbertObject, textComponent);
+	qbertObject->AddComponent(textComponent);		// Lives component
+	qbertObject->AddComponent(livesComponent);		// Lives component
+
+	textComponent = make_shared<TextComponent>(" Lives", font, SDL_Color{ 0,255,0 });
+	textComponent->SetPosition(0, 230);
+	scoreComponent = make_shared<ScoreComponent>(*qbertObject, textComponent);
+	qbertObject->AddComponent(textComponent);		// Score component
+	qbertObject->AddComponent(scoreComponent);		// Score component
+
+	scene.Add(qbertObject);
 }
 
 void dae::Minigin::Cleanup()
@@ -110,14 +163,10 @@ void dae::Minigin::Run()
 			sceneManager.Update(deltaTime);
 			while (lag >= msPerUpdate)
 			{
-				//sceneManager.FixedUpdate(msPerUpdate);
 				lag -= msPerUpdate;
 			}
 			
 			renderer.Render();
-			//
-			//auto sleepTime = duration_cast<duration<float>>(currentTime + milliseconds(MsPerFrame) - high_resolution_clock::now());
-			//this_thread::sleep_for(sleepTime);
 		}
 	}
 
